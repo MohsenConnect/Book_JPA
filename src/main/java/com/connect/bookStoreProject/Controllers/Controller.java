@@ -29,7 +29,6 @@ public class Controller {
     @Autowired
     BookRepo bookRepo;
 
-
     @GetMapping("/allBooks")
     public List<Book> getAllBooks() {
         return bookRepo.findAll();
@@ -84,20 +83,3 @@ public class Controller {
         return new ResponseEntity<>(excelFile.toByteArray(), headers, 200);
     }
 }
-
-
-//    @GetMapping("/export/excel")
-//    public ResponseEntity<byte[]> exportBooksToExcel(BookSearch searchWord, Pageable pageable) {
-//        try {
-//            ByteArrayOutputStream excelBytes = bookService.createNewExcel(searchWord, pageable);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", "books.xlsx");
-//
-//            return new ResponseEntity<>(excelBytes.toByteArray(), headers, HttpStatus.OK);
-//        } catch (IOException e) {
-//            // Handle the exception appropriately
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
