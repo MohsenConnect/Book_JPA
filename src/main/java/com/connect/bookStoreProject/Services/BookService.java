@@ -14,7 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +59,7 @@ public class BookService {
     }
 
 
-    public void printObjects(BookSearch searchWord, Pageable pageable){
+    public void printObjects(BookSearch searchWord, Pageable pageable) {
         Page<Book> books = findPageBySpecs(searchWord, pageable);
         for (Book book : books) {
             System.out.println(">>>>>>>>>>>");
@@ -72,24 +75,24 @@ public class BookService {
     public void createFile() throws IOException {
 //        EXCEL File Consists of Workbooks >> Sheets >> ecach sheat has Rows & Cells
 //        Create The Workebook
-            XSSFWorkbook myWorkbook = new XSSFWorkbook();
+        XSSFWorkbook myWorkbook = new XSSFWorkbook();
 //        Create The Sheet || with index or name
-            XSSFSheet mySheet = myWorkbook.createSheet("Mohsen");
+        XSSFSheet mySheet = myWorkbook.createSheet("Mohsen");
 //        Create Row Index starts from 0
-            mySheet.createRow(0);
-            mySheet.getRow(0).createCell(0).setCellValue("Project");
-            mySheet.getRow(0).createCell(1).setCellValue("Mohsen");
+        mySheet.createRow(0);
+        mySheet.getRow(0).createCell(0).setCellValue("Project");
+        mySheet.getRow(0).createCell(1).setCellValue("Mohsen");
 
 
-            File myFile = new File("A:\\Tasks\\Feb.2024\\dataSours5.xlsx");
+        File myFile = new File("A:\\Tasks\\Feb.2024\\dataSours5.xlsx");
 //        FileOutputStream is used to write primitive values into a file
 //        for character-oriented data, it is preferred to use FileWriter than FileOutputStream.
-            FileOutputStream addFile = new FileOutputStream(myFile);
-            myWorkbook.write(addFile);
+        FileOutputStream addFile = new FileOutputStream(myFile);
+        myWorkbook.write(addFile);
 
-            myWorkbook.close();
+        myWorkbook.close();
 
-        }
+    }
 
 
     public ByteArrayOutputStream createNewExcel(BookSearch searchWord, Pageable pageable) throws IOException {
@@ -112,8 +115,7 @@ public class BookService {
             row.createCell(4).setCellValue(book.getCatigory());
         }
 
-        System.out.println("test");
-        System.out.println("test");
+        System.out.println("EEEEEEEEEEE");
         // Write the workbook content to a ByteArrayOutputStream
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         myWorkbook.write(byteArrayOutputStream);
@@ -121,44 +123,5 @@ public class BookService {
 
         return byteArrayOutputStream;
     }
-//    public ByteArrayOutputStream createNewExcel(BookSearch searchWord, Pageable pageable) throws IOException {
-//        Page<Book> books = findPageBySpecs(searchWord, pageable);
-//
-////        EXCEL File Consists of Workbooks >> Sheets >> ecach sheat has Rows & Cells
-////        Create The Workebook
-//        XSSFWorkbook myWorkbook = new XSSFWorkbook();
-////        Create The Sheet || with index or name
-//        XSSFSheet mySheet = myWorkbook.createSheet("Mohsen");
-////        Create Row Index starts from 0
-//
-//        int i = 0;
-//        for (Book book : books) {
-//            mySheet.createRow(i);
-//            mySheet.getRow(i).createCell(0).setCellValue(book.getBookId());
-//            mySheet.getRow(i).createCell(1).setCellValue(book.getBookName());
-//            mySheet.getRow(i).createCell(2).setCellValue(book.getSize());
-//            mySheet.getRow(i).createCell(3).setCellValue(book.getPrice());
-//            mySheet.getRow(i).createCell(4).setCellValue(book.getCatigory());
-//            i++;
-//        }
-//
-////        File myFile = new File("A:\\Tasks\\Feb.2024\\bookPage1.xlsx");
-//        File myFile = new File("bookPage1.xlsx");
-//        FileOutputStream addFile = new FileOutputStream(myFile);
-//
-////        FileOutputStream is used to write primitive values into a file
-////        for character-oriented data, it is preferred to use FileWriter than FileOutputStream.
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        myWorkbook.write(byteArrayOutputStream);
-//        myWorkbook.close();
-//        return byteArrayOutputStream;
-//    }
-
-
-//    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//    myWorkbook.write(byteArrayOutputStream);
-//    myWorkbook.close();
-//
-//    return byteArrayOutputStream;
 
 }

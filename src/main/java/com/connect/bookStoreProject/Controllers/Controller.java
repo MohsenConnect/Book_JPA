@@ -4,7 +4,7 @@ package com.connect.bookStoreProject.Controllers;
 import com.connect.bookStoreProject.Entities.Book;
 import com.connect.bookStoreProject.Entities.BookSearch;
 import com.connect.bookStoreProject.Repos.BookRepo;
-import com.connect.bookStoreProject.Services.*;
+import com.connect.bookStoreProject.Services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +29,6 @@ public class Controller {
     @Autowired
     BookRepo bookRepo;
 
-
     @GetMapping("/allBooks")
     public List<Book> getAllBooks() {
         return bookRepo.findAll();
@@ -51,14 +50,14 @@ public class Controller {
 
     @PostMapping("/page")
     public Page<Book> findByPagAutherSpec(@RequestBody BookSearch searchWord, Pageable pageable) {
-        return  bookService.findPageBySpecs(searchWord,pageable);
+        return bookService.findPageBySpecs(searchWord, pageable);
     }
 
 
     @PostMapping("/file")
     public File generateFile(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
 //    return bookService.createNewExcel(searchWord,pageable);
-    return null;
+        return null;
     }
 
     @PostMapping("/print")
@@ -73,7 +72,6 @@ public class Controller {
     }
 
 
-
     @PostMapping("/genExcel")
     public ResponseEntity<?> findAllByEmpSpec(@RequestBody BookSearch bookSearch, Pageable pageable) throws IOException {
         ByteArrayOutputStream excelFile = bookService.createNewExcel(bookSearch, pageable);
@@ -84,20 +82,3 @@ public class Controller {
         return new ResponseEntity<>(excelFile.toByteArray(), headers, 200);
     }
 }
-
-
-//    @GetMapping("/export/excel")
-//    public ResponseEntity<byte[]> exportBooksToExcel(BookSearch searchWord, Pageable pageable) {
-//        try {
-//            ByteArrayOutputStream excelBytes = bookService.createNewExcel(searchWord, pageable);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", "books.xlsx");
-//
-//            return new ResponseEntity<>(excelBytes.toByteArray(), headers, HttpStatus.OK);
-//        } catch (IOException e) {
-//            // Handle the exception appropriately
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
