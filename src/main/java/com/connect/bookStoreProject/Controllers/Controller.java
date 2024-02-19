@@ -4,7 +4,7 @@ package com.connect.bookStoreProject.Controllers;
 import com.connect.bookStoreProject.Entities.Book;
 import com.connect.bookStoreProject.Entities.BookSearch;
 import com.connect.bookStoreProject.Repos.BookRepo;
-import com.connect.bookStoreProject.Services.*;
+import com.connect.bookStoreProject.Services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,14 +50,14 @@ public class Controller {
 
     @PostMapping("/page")
     public Page<Book> findByPagAutherSpec(@RequestBody BookSearch searchWord, Pageable pageable) {
-        return  bookService.findPageBySpecs(searchWord,pageable);
+        return bookService.findPageBySpecs(searchWord, pageable);
     }
 
 
     @PostMapping("/file")
     public File generateFile(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
 //    return bookService.createNewExcel(searchWord,pageable);
-    return null;
+        return null;
     }
 
     @PostMapping("/print")
@@ -70,7 +70,6 @@ public class Controller {
     public void geneFile() throws IOException {
         bookService.createFile();
     }
-
 
 
     @PostMapping("/genExcel")
