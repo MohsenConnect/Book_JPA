@@ -112,6 +112,7 @@ public class BookService {
             row.createCell(4).setCellValue(book.getCatigory());
         }
 
+        System.out.println("test");
         // Write the workbook content to a ByteArrayOutputStream
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         myWorkbook.write(byteArrayOutputStream);
