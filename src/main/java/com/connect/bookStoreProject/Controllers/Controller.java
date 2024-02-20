@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +18,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 @RestController
 @RequestMapping("/connect")
 public class Controller {
-
     @Autowired
     BookService bookService;
-
     @Autowired
     BookRepo bookRepo;
 
@@ -44,41 +45,53 @@ public class Controller {
     public ResponseEntity<?> findByAutherSpec(@RequestBody BookSearch searchWord) {
         return ResponseEntity.ok(bookService.findBySpecs(searchWord));
     }
-
     Page<Book> bookList;
-
-
     @PostMapping("/page")
     public Page<Book> findByPagAutherSpec(@RequestBody BookSearch searchWord, Pageable pageable) {
         return bookService.findPageBySpecs(searchWord, pageable);
     }
 
-
-    @PostMapping("/file")
-    public File generateFile(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
-//    return bookService.createNewExcel(searchWord,pageable);
-        return null;
-    }
-
-    @PostMapping("/print")
-    public void printObject(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
-        bookService.printObjects(searchWord, pageable);
-    }
-
-
-    @GetMapping("/do")
+    @GetMapping("/genTestFile")
     public void geneFile() throws IOException {
-        bookService.createFile();
+        bookService.createTestFile();
     }
 
 
     @PostMapping("/genExcel")
-    public ResponseEntity<?> findAllByEmpSpec(@RequestBody BookSearch bookSearch, Pageable pageable) throws IOException {
+    public ResponseEntity<?> findAllByBookSpec(@RequestBody BookSearch bookSearch, Pageable pageable) throws IOException {
         ByteArrayOutputStream excelFile = bookService.createNewExcel(bookSearch, pageable);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "Book.csv"); // Set the file name
 
         return new ResponseEntity<>(excelFile.toByteArray(), headers, 200);
+    }
+
+    @PostMapping("/genExcelByThread")
+    public ResponseEntity<?> downloadAllByBookByThread(@RequestBody BookSearch bookSearch, Pageable pageable) throws IOException, ExecutionException, InterruptedException, ExecutionException {
+        CompletableFuture<ByteArrayOutputStream> excelFileFuture = bookService.generateBookByMultiThreads(bookSearch, pageable);
+        // Wait for the CompletableFuture to complete and get the result
+        ByteArrayOutputStream excelFile = excelFileFuture.get();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Book.csv"); // Set the file name
+
+        return new ResponseEntity<>(excelFile.toByteArray(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/getByThread")
+    public CompletableFuture<ResponseEntity> findAllBooks(){
+        return bookService.getAllBookByMultiThreads().thenApply(ResponseEntity::ok);
+    }
+
+    @PostMapping("/print")
+    public void printObject(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
+        bookService.printBookObjects(searchWord, pageable);
+    }
+
+    @PostMapping("/file")
+    public File generateFile(@RequestBody BookSearch searchWord, Pageable pageable) throws IOException {
+//    return bookService.createNewExcel(searchWord,pageable);
+        return null;
     }
 }
